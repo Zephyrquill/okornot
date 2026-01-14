@@ -50,13 +50,13 @@
     "likes": 0,
     "dislikes": 0
   },
-    {
+  {
     "id": 3,
     "playerName": "Mert Günok",
     "age": 36,
     "position": "Kaleci",
     "nationality": "Türkiye",
-    "fromTeam": "Beşiktaş  ",
+    "fromTeam": "Beşiktaş",
     "toTeam": "Fenerbahçe",
     "transferFee": "- €",
     "contractYears": "2.5",
@@ -73,9 +73,9 @@
     "likes": 0,
     "dislikes": 0
   },
-    {
+  {
     "id": 4,
-    "playerName": " Youssef En-Nesyri",
+    "playerName": "Youssef En-Nesyri",
     "age": 28,
     "position": "Forvet",
     "nationality": "Fas",
@@ -96,14 +96,14 @@
     "likes": 0,
     "dislikes": 0
   },
-    {
+  {
     "id": 5,
-    "playerName": " Sebastian Szymanski",
+    "playerName": "Sebastian Szymanski",
     "age": 26,
     "position": "Orta Saha",
     "nationality": "Polonya",
     "fromTeam": "Fenerbahçe",
-    "toTeam": " Stade Rennes",
+    "toTeam": "Stade Rennes",
     "transferFee": "- €",
     "contractYears": "-",
     "annualSalary": "- €",
@@ -111,7 +111,7 @@
     "status": "dedikodu",
     "verifiedSources": [
       {
-        "name": " Yağız Sabuncuoğlu",
+        "name": "Yağız Sabuncuoğlu",
         "url": "https://x.com/yagosabuncuoglu/status/2010368055654674687",
         "type": "twitter"
       }
@@ -119,14 +119,14 @@
     "likes": 0,
     "dislikes": 0
   },
-    {
+  {
     "id": 6,
-    "playerName": " Mathys Tel",
+    "playerName": "Mathys Tel",
     "age": 26,
     "position": "Forvet",
     "nationality": "Fransa",
     "fromTeam": "Tottenham",
-    "toTeam": " Fenerbahçe",
+    "toTeam": "Fenerbahçe",
     "transferFee": "- €",
     "contractYears": "-",
     "annualSalary": "- €",
@@ -134,51 +134,34 @@
     "status": "dedikodu",
     "verifiedSources": [
       {
-        "name": " The Guardian",
+        "name": "The Guardian",
         "url": "https://www.theguardian.com/football/2026/jan/12/tottenham-mathys-tel-loan-thomas-frank-transfers",
         "type": "Haber"
       },
-            {
+      {
         "name": "Serkan Gazioğlu",
         "url": "https://x.com/Fener_/status/2011527373355958526",
         "type": "twitter"
       }
-      
     ],
     "likes": 0,
     "dislikes": 0
-
-        {
+  },
+  {
     "id": 7,
     "playerName": "Omar Marmoush",
     "age": 26,
     "position": "Forvet",
     "nationality": "Mısır",
     "fromTeam": "Man City",
-    "toTeam": " Fenerbahçe",
+    "toTeam": "Fenerbahçe",
     "transferFee": "- €",
     "contractYears": "-",
     "annualSalary": "- €",
     "transferDate": "2026-01-15",
     "status": "dedikodu",
-    "verifiedSources": [
-      {
-      }
-    ],
+    "verifiedSources": [],
     "likes": 0,
     "dislikes": 0
-  
   }
-
-
-
-
-  
-
-
-
-
-
-
 ]
-
