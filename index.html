@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transfer Karnesi | Ok or Not</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-futbol"></i> Transfer Karnesi</h1>
+            <p class="tagline">Her transferi 👍 OK veya 👎 NOT OK olarak oyla. Taraftar ne diyor, gör!</p>
+        </header>
+
+        <main>
+            <div class="filters">
+                <input type="text" id="searchInput" placeholder="Oyuncu veya takım ara...">
+                <select id="statusFilter">
+                    <option value="">Tüm Durumlar</option>
+                    <option value="resmi">Resmi</option>
+                    <option value="dedikodu">Dedikodu</option>
+                    <option value="rapor">Rapor</option>
+                </select>
+                <button id="sortLikes"><i class="fas fa-fire"></i> En Çok Beğenilenler</button>
+            </div>
+
+            <div id="transferList"></div>
+            <div id="loading"><i class="fas fa-spinner fa-spin"></i> Transferler yükleniyor...</div>
+        </main>
+
+        <footer>
+            <p><i class="fas fa-code"></i> Futbol tutkunları için açık kaynak</p>
+            <p class="github-link">
+                <a href="https://github.com/Zephyrquill/okornot" target="_blank">
+                    <i class="fab fa-github"></i> GitHub'da Katkıda Bulun
+                </a>
+            </p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
