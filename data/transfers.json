@@ -96,7 +96,7 @@
     "likes": 0,
     "dislikes": 0
   },
-      {
+    {
     "id": 5,
     "playerName": " Sebastian Szymanski",
     "age": 26,
@@ -118,8 +118,30 @@
     ],
     "likes": 0,
     "dislikes": 0
+  },
+    {
+    "id": 5,
+    "playerName": " Mathys Tel",
+    "age": 26,
+    "position": "Forvet",
+    "nationality": "Fransa",
+    "fromTeam": "Tottenham",
+    "toTeam": " Fenerbahçe",
+    "transferFee": "- €",
+    "contractYears": "-",
+    "annualSalary": "- €",
+    "transferDate": "2026-01-14",
+    "status": "dedikodu",
+    "verifiedSources": [
+      {
+        "name": " The Guardian",
+        "url": "https://www.theguardian.com/football/2026/jan/12/tottenham-mathys-tel-loan-thomas-frank-transfers",
+        "type": "Haber"
+      }
+    ],
+    "likes": 0,
+    "dislikes": 0
   }
-
 
 
 
