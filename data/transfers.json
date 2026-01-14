@@ -29,49 +29,25 @@
   },
   {
     "id": 2,
-    "playerName": "Victor Osimhen",
-    "age": 25,
+    "playerName": "Can Armando Güner",
+    "age": 18,
     "position": "Forvet",
-    "nationality": "Nijerya",
-    "fromTeam": "Napoli",
-    "toTeam": "Chelsea",
-    "transferFee": "120M €",
-    "contractYears": 5,
-    "annualSalary": "300.000 £",
-    "transferDate": "2024-06-15",
+    "nationality": "Türkiye",
+    "fromTeam": "Borussia Mönchengladbach U19",
+    "toTeam": "Fenerbahçe",
+    "transferFee": "- €",
+    "contractYears": "-",
+    "annualSalary": "- £",
+    "transferDate": "2026-01-15",
     "status": "dedikodu",
     "verifiedSources": [
       {
-        "name": "Sky Sports",
-        "url": "https://www.skysports.com/football/news/11668/12345678/osimhen-chelsea-transfer",
-        "type": "news"
+        "name": "Yağız Sabuncuoğlu",
+        "url": "https://x.com/yagosabuncuoglu/status/2010838036729250014",
+        "type": "twitter"
       }
     ],
-    "likes": 892,
-    "dislikes": 415
-  },
-  {
-    "id": 3,
-    "playerName": "Jude Bellingham",
-    "age": 20,
-    "position": "Orta Saha",
-    "nationality": "İngiltere",
-    "fromTeam": "Borussia Dortmund",
-    "toTeam": "Real Madrid",
-    "transferFee": "103M €",
-    "contractYears": 6,
-    "annualSalary": "200.000 €",
-    "transferDate": "2023-06-14",
-    "status": "resmi",
-    "verifiedSources": [
-      {
-        "name": "Real Madrid Resmi",
-        "url": "https://www.realmadrid.com/tr/haberler/2023/06/14/jude-bellingham-imzalandi",
-        "type": "resmi"
-      }
-    ],
-    "likes": 3150,
-    "dislikes": 95
+    "likes": 0,
+    "dislikes": 0
   }
-
 ]
