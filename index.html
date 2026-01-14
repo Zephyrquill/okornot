@@ -3,9 +3,446 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transfer Karnesi | Ok or Not</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Transfer Karnesi | OK or NOT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            color: #e8e8e8;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .site-title {
+            font-size: 3.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffffff 0%, #a0a0a0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -2px;
+            margin-bottom: 10px;
+            line-height: 1.1;
+        }
+
+        .tagline {
+            font-size: 1rem;
+            color: #707070;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        #searchInput {
+            padding: 12px 18px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            color: #e8e8e8;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        #searchInput:focus {
+            outline: none;
+            border-color: rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.05);
+        }
+
+        #searchInput::placeholder {
+            color: #606060;
+        }
+
+        #statusFilter, #sortLikes {
+            padding: 12px 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            color: #b0b0b0;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        #sortLikes {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #statusFilter:hover, #sortLikes:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.12);
+            color: #e8e8e8;
+        }
+
+        #transferList {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+
+        .transfer-card {
+            background: rgba(255,255,255,0.02);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .transfer-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .transfer-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.04);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+
+        .transfer-card:hover::before {
+            opacity: 1;
+        }
+
+        .transfer-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            gap: 12px;
+        }
+
+        .transfer-header h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+            flex: 1;
+            line-height: 1.3;
+        }
+
+        .status {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .status.resmi {
+            background: rgba(34, 197, 94, 0.12);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .status.dedikodu {
+            background: rgba(251, 191, 36, 0.12);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .status.rapor {
+            background: rgba(168, 85, 247, 0.12);
+            color: #a855f7;
+            border: 1px solid rgba(168, 85, 247, 0.2);
+        }
+
+        .player-meta {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .player-meta span {
+            font-size: 0.8rem;
+            color: #808080;
+            padding: 3px 8px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 4px;
+        }
+
+        .transfer-teams {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 16px 0;
+            padding: 14px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .team {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+
+        .team-logo-placeholder {
+            width: 44px;
+            height: 44px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #a0a0a0;
+            margin-bottom: 6px;
+        }
+
+        .team span {
+            font-size: 0.85rem;
+            color: #b0b0b0;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .team.to span {
+            color: #e8e8e8;
+        }
+
+        .arrow {
+            font-size: 1.4rem;
+            color: #505050;
+            margin: 0 12px;
+        }
+
+        .transfer-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 16px 0;
+            padding: 14px 0;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .detail {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .detail .label {
+            font-size: 0.75rem;
+            color: #707070;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .detail .value {
+            font-size: 0.9rem;
+            color: #e8e8e8;
+            font-weight: 600;
+        }
+
+        .sources {
+            margin: 14px 0;
+        }
+
+        .sources h4 {
+            font-size: 0.75rem;
+            color: #707070;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .source-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .source-links a {
+            padding: 6px 10px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 6px;
+            color: #909090;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .source-links a:hover {
+            background: rgba(255,255,255,0.08);
+            color: #e8e8e8;
+            border-color: rgba(255,255,255,0.12);
+        }
+
+        .source-links a i {
+            font-size: 0.75rem;
+        }
+
+        .source-name {
+            font-size: 0.75rem;
+        }
+
+        .voting {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .vote-btn {
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.02);
+            color: #a0a0a0;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .vote-btn .count {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .vote-btn.like:hover:not(:disabled) {
+            background: rgba(34, 197, 94, 0.08);
+            border-color: rgba(34, 197, 94, 0.3);
+            color: #4ade80;
+        }
+
+        .vote-btn.dislike:hover:not(:disabled) {
+            background: rgba(239, 68, 68, 0.08);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        .vote-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .vote-btn:disabled.like {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: rgba(34, 197, 94, 0.25);
+            color: #4ade80;
+        }
+
+        .vote-btn:disabled.dislike {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.25);
+            color: #ef4444;
+        }
+
+        .vote-message {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #fbbf24;
+            text-align: center;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            color: #606060;
+            font-size: 0.85rem;
+        }
+
+        .github-link {
+            margin-top: 8px;
+        }
+
+        .github-link a {
+            color: #808080;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .github-link a:hover {
+            color: #e8e8e8;
+        }
+
+        #loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #606060;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 16px;
+            }
+
+            .site-title {
+                font-size: 2.4rem;
+            }
+
+            .filters {
+                grid-template-columns: 1fr;
+            }
+
+            #transferList {
+                grid-template-columns: 1fr;
+            }
+
+            .transfer-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -23,7 +460,7 @@
                     <option value="dedikodu">Dedikodu</option>
                     <option value="rapor">Rapor</option>
                 </select>
-                <button id="sortLikes"><i class="fas fa-fire"></i> En Çok Beğenilenler</button>
+                <button id="sortLikes"><i class="fas fa-fire"></i> Popüler</button>
             </div>
 
             <div id="transferList"></div>
@@ -40,6 +477,290 @@
         </footer>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const transferList = document.getElementById('transferList');
+            const loading = document.getElementById('loading');
+            const searchInput = document.getElementById('searchInput');
+            const statusFilter = document.getElementById('statusFilter');
+            const sortLikesBtn = document.getElementById('sortLikes');
+
+            let transfers = [];
+            let userVotes = JSON.parse(localStorage.getItem('transferVotes')) || {};
+
+            // Örnek veri - transfers.json dosyanız ile değiştirin
+            const sampleData = [
+                {
+                    "id": 1,
+                    "playerName": "Arda Güler",
+                    "age": 19,
+                    "position": "Orta Saha",
+                    "nationality": "Türkiye",
+                    "fromTeam": "Fenerbahçe",
+                    "toTeam": "Real Madrid",
+                    "transferFee": "20M €",
+                    "contractYears": 6,
+                    "weeklyWage": "150.000 €",
+                    "transferDate": "2023-07-06",
+                    "status": "resmi",
+                    "verifiedSources": [
+                        {
+                            "name": "Real Madrid",
+                            "url": "https://www.realmadrid.com",
+                            "type": "newspaper"
+                        },
+                        {
+                            "name": "Fabrizio Romano",
+                            "url": "https://twitter.com/FabrizioRomano",
+                            "type": "twitter"
+                        }
+                    ],
+                    "likes": 2145,
+                    "dislikes": 128
+                },
+                {
+                    "id": 2,
+                    "playerName": "Victor Osimhen",
+                    "age": 25,
+                    "position": "Forvet",
+                    "nationality": "Nijerya",
+                    "fromTeam": "Napoli",
+                    "toTeam": "Chelsea",
+                    "transferFee": "120M €",
+                    "contractYears": 5,
+                    "weeklyWage": "300.000 £",
+                    "transferDate": "2024-06-15",
+                    "status": "dedikodu",
+                    "verifiedSources": [
+                        {
+                            "name": "Sky Sports",
+                            "url": "https://www.skysports.com",
+                            "type": "newspaper"
+                        }
+                    ],
+                    "likes": 892,
+                    "dislikes": 415
+                },
+                {
+                    "id": 3,
+                    "playerName": "Jude Bellingham",
+                    "age": 20,
+                    "position": "Orta Saha",
+                    "nationality": "İngiltere",
+                    "fromTeam": "Borussia Dortmund",
+                    "toTeam": "Real Madrid",
+                    "transferFee": "103M €",
+                    "contractYears": 6,
+                    "weeklyWage": "200.000 €",
+                    "transferDate": "2023-06-14",
+                    "status": "resmi",
+                    "verifiedSources": [
+                        {
+                            "name": "Real Madrid",
+                            "url": "https://www.realmadrid.com",
+                            "type": "newspaper"
+                        }
+                    ],
+                    "likes": 3150,
+                    "dislikes": 95
+                }
+            ];
+
+            // Gerçek projenizde aşağıdaki satırı kullanın:
+            // fetch('data/transfers.json')
+            //     .then(response => response.json())
+            //     .then(data => {
+            //         transfers = data;
+            //         loading.style.display = 'none';
+            //         displayTransfers(transfers);
+            //     })
+            //     .catch(error => {
+            //         console.error('Hata:', error);
+            //         loading.innerHTML = `<p style="color:#ef4444">HATA: ${error.message}</p>`;
+            //     });
+
+            // Demo için:
+            setTimeout(() => {
+                transfers = sampleData;
+                loading.style.display = 'none';
+                displayTransfers(transfers);
+            }, 500);
+
+            function displayTransfers(transfersToShow) {
+                transferList.innerHTML = '';
+                
+                if (transfersToShow.length === 0) {
+                    transferList.innerHTML = '<div class="transfer-card"><p>Arama kriterlerine uygun transfer bulunamadı.</p></div>';
+                    return;
+                }
+
+                transfersToShow.forEach(transfer => {
+                    const hasVoted = userVotes[transfer.id] !== undefined;
+                    const userVote = userVotes[transfer.id];
+                    
+                    const sourcesHTML = transfer.verifiedSources && transfer.verifiedSources.length > 0 
+                        ? transfer.verifiedSources.map(source => `
+                            <a href="${source.url}" target="_blank" class="source">
+                                <i class="fas fa-${source.type === 'twitter' ? 'x-twitter' : 'newspaper'}"></i>
+                                <span class="source-name">${source.name}</span>
+                            </a>
+                        `).join('')
+                        : '<p style="font-size:0.8rem;color:#606060">Kaynak linki henüz eklenmedi.</p>';
+
+                    const card = document.createElement('div');
+                    card.className = 'transfer-card';
+                    card.innerHTML = `
+                        <div class="transfer-header">
+                            <h2>${transfer.playerName}</h2>
+                            <span class="status ${transfer.status}">${transfer.status}</span>
+                        </div>
+                        
+                        <div class="player-meta">
+                            <span>${transfer.age} yaş</span>
+                            <span>${transfer.position}</span>
+                            <span>${transfer.nationality}</span>
+                        </div>
+                        
+                        <div class="transfer-teams">
+                            <div class="team from">
+                                <div class="team-logo-placeholder">${transfer.fromTeam.charAt(0)}</div>
+                                <span>${transfer.fromTeam}</span>
+                            </div>
+                            <div class="arrow">→</div>
+                            <div class="team to">
+                                <div class="team-logo-placeholder">${transfer.toTeam.charAt(0)}</div>
+                                <span>${transfer.toTeam}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="transfer-details">
+                            <div class="detail">
+                                <span class="label">Bonservis</span>
+                                <span class="value">${transfer.transferFee || 'Açıklanmadı'}</span>
+                            </div>
+                            <div class="detail">
+                                <span class="label">Sözleşme</span>
+                                <span class="value">${transfer.contractYears || '?'} yıl</span>
+                            </div>
+                            <div class="detail">
+                                <span class="label">Haftalık Maaş</span>
+                                <span class="value">${transfer.weeklyWage || 'Açıklanmadı'}</span>
+                            </div>
+                            <div class="detail">
+                                <span class="label">Transfer Tarihi</span>
+                                <span class="value">${formatDate(transfer.transferDate)}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="sources">
+                            <h4><i class="fas fa-link"></i> Kaynaklar</h4>
+                            <div class="source-links">
+                                ${sourcesHTML}
+                            </div>
+                        </div>
+                        
+                        <div class="voting">
+                            <button class="vote-btn like" data-id="${transfer.id}" ${hasVoted ? 'disabled' : ''}>
+                                👍 OK <span class="count">${transfer.likes || 0}</span>
+                                ${userVote === 'like' ? '<i class="fas fa-check"></i>' : ''}
+                            </button>
+                            <button class="vote-btn dislike" data-id="${transfer.id}" ${hasVoted ? 'disabled' : ''}>
+                                👎 NOT OK <span class="count">${transfer.dislikes || 0}</span>
+                                ${userVote === 'dislike' ? '<i class="fas fa-check"></i>' : ''}
+                            </button>
+                        </div>
+                        
+                        <div class="vote-message" id="message-${transfer.id}"></div>
+                    `;
+                    
+                    transferList.appendChild(card);
+                });
+
+                document.querySelectorAll('.vote-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const transferId = parseInt(this.getAttribute('data-id'));
+                        const voteType = this.classList.contains('like') ? 'like' : 'dislike';
+                        voteForTransfer(transferId, voteType);
+                    });
+                });
+            }
+
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('tr-TR', {
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric'
+                });
+            }
+
+            function voteForTransfer(transferId, voteType) {
+                if (userVotes[transferId] !== undefined) {
+                    return;
+                }
+
+                userVotes[transferId] = voteType;
+                localStorage.setItem('transferVotes', JSON.stringify(userVotes));
+                
+                const transfer = transfers.find(t => t.id === transferId);
+                if (voteType === 'like') {
+                    transfer.likes = (transfer.likes || 0) + 1;
+                } else {
+                    transfer.dislikes = (transfer.dislikes || 0) + 1;
+                }
+
+                const voteBtnLike = document.querySelector(`.vote-btn.like[data-id="${transferId}"]`);
+                const voteBtnDislike = document.querySelector(`.vote-btn.dislike[data-id="${transferId}"]`);
+                const messageDiv = document.getElementById(`message-${transferId}`);
+                
+                voteBtnLike.disabled = true;
+                voteBtnDislike.disabled = true;
+
+                if (voteType === 'like') {
+                    voteBtnLike.innerHTML = `👍 OK <span class="count">${transfer.likes}</span> <i class="fas fa-check"></i>`;
+                    voteBtnLike.classList.add('voted');
+                    messageDiv.textContent = 'OK oyu verdiniz!';
+                } else {
+                    voteBtnDislike.innerHTML = `👎 NOT OK <span class="count">${transfer.dislikes}</span> <i class="fas fa-check"></i>`;
+                    voteBtnDislike.classList.add('voted');
+                    messageDiv.textContent = 'NOT OK oyu verdiniz!';
+                }
+                
+                setTimeout(() => {
+                    messageDiv.textContent = '';
+                }, 3000);
+            }
+
+            searchInput.addEventListener('input', filterTransfers);
+            statusFilter.addEventListener('change', filterTransfers);
+            
+            function filterTransfers() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const statusTerm = statusFilter.value;
+                
+                const filtered = transfers.filter(transfer => {
+                    const matchesSearch = 
+                        transfer.playerName.toLowerCase().includes(searchTerm) ||
+                        transfer.fromTeam.toLowerCase().includes(searchTerm) ||
+                        transfer.toTeam.toLowerCase().includes(searchTerm);
+                    
+                    const matchesStatus = !statusTerm || transfer.status === statusTerm;
+                    
+                    return matchesSearch && matchesStatus;
+                });
+                
+                displayTransfers(filtered);
+            }
+
+            sortLikesBtn.addEventListener('click', () => {
+                const sorted = [...transfers].sort((a, b) => {
+                    const likesA = a.likes || 0;
+                    const likesB = b.likes || 0;
+                    return likesB - likesA;
+                });
+                displayTransfers(sorted);
+            });
+        });
+    </script>
 </body>
 </html>
