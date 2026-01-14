@@ -137,11 +137,43 @@
         "name": " The Guardian",
         "url": "https://www.theguardian.com/football/2026/jan/12/tottenham-mathys-tel-loan-thomas-frank-transfers",
         "type": "Haber"
+      },
+            {
+        "name": "Serkan Gazioğlu",
+        "url": "https://x.com/Fener_/status/2011527373355958526",
+        "type": "twitter"
+      }
+      
+    ],
+    "likes": 0,
+    "dislikes": 0
+
+        {
+    "id": 7,
+    "playerName": "Omar Marmoush",
+    "age": 26,
+    "position": "Forvet",
+    "nationality": "Mısır",
+    "fromTeam": "Man City",
+    "toTeam": " Fenerbahçe",
+    "transferFee": "- €",
+    "contractYears": "-",
+    "annualSalary": "- €",
+    "transferDate": "2026-01-15",
+    "status": "dedikodu",
+    "verifiedSources": [
+      {
       }
     ],
     "likes": 0,
     "dislikes": 0
+  
   }
+
+
+
+
+  
 
 
 
@@ -149,3 +181,4 @@
 
 
 ]
+
