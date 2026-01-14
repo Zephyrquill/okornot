@@ -137,9 +137,16 @@
     "annualSalary": "- €",
     "transferDate": "2026-01-15",
     "status": "dedikodu",
-    "verifiedSources": [],
+    "verifiedSources": [
+      {
+        "name": "Afrika Futbolu",
+        "url": "https://x.com/afrikafutbolu1/status/2011561314762834125",
+        "type": "twitter"
+      }
+    ],
     "likes": 0,
     "dislikes": 0
   }
 ]
+
 
