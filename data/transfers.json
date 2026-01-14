@@ -62,7 +62,7 @@
     "contractYears": "2.5",
     "annualSalary": "- £",
     "transferDate": "2026-01-05",
-    "status": "Resmi",
+    "status": "resmi",
     "verifiedSources": [
       {
         "name": "Fenerbahçe",
@@ -78,3 +78,4 @@
 
 
 ]
+
