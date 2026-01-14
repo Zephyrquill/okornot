@@ -4,6 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transfer Karnesi | OK or NOT</title>
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://zephyrquill.github.io/okornot/">
+    <meta property="og:title" content="Transfer Karnesi | OK or NOT">
+    <meta property="og:description" content="Futbol transferlerini minimalist bir şekilde değerlendirin">
+    <meta property="og:image" content="https://zephyrquill.github.io/okornot/preview-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Transfer OK or NOT">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://zephyrquill.github.io/okornot/">
+    <meta name="twitter:title" content="Transfer Karnesi | OK or NOT">
+    <meta name="twitter:description" content="Futbol transferlerini minimalist bir şekilde değerlendirin">
+    <meta name="twitter:image" content="https://zephyrquill.github.io/okornot/preview-image.png">
+    <meta name="twitter:creator" content="@zephyrquill">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -477,149 +496,241 @@
         </footer>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc, increment } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC0AEEAB-oHS1RMrsZ7sm4IEg8IriAPT30",
+            authDomain: "transfer-ok-or-not.firebaseapp.com",
+            projectId: "transfer-ok-or-not",
+            storageBucket: "transfer-ok-or-not.firebasestorage.app",
+            messagingSenderId: "247263819078",
+            appId: "1:247263819078:web:88256bfb55c026893e6147",
+            measurementId: "G-WZBFXTRRWQ"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Global variables
+        let transfers = [];
+        let userVotes = JSON.parse(localStorage.getItem('transferVotes')) || {};
+
+        // Generate browser fingerprint
+        function getBrowserFingerprint() {
+            const fingerprint = localStorage.getItem('browserFingerprint');
+            if (fingerprint) return fingerprint;
+            
+            const newFingerprint = `fp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            localStorage.setItem('browserFingerprint', newFingerprint);
+            return newFingerprint;
+        }
+
+        const browserFingerprint = getBrowserFingerprint();
+
+        // Load transfers from JSON and sync with Firebase
+        async function loadTransfers() {
+            try {
+                // Load from JSON
+                const response = await fetch('data/transfers.json');
+                if (!response.ok) throw new Error('transfers.json bulunamadı');
+                const jsonTransfers = await response.json();
+
+                // Get existing transfers from Firebase
+                const transfersSnapshot = await getDocs(collection(db, 'transfers'));
+                const existingIds = new Set();
+                const firestoreTransfers = [];
+
+                transfersSnapshot.forEach(doc => {
+                    existingIds.add(doc.id);
+                    firestoreTransfers.push({ id: doc.id, ...doc.data() });
+                });
+
+                // Sync JSON transfers to Firebase
+                for (const transfer of jsonTransfers) {
+                    const transferId = transfer.id.toString();
+                    
+                    if (!existingIds.has(transferId)) {
+                        // Add new transfer to Firebase
+                        await setDoc(doc(db, 'transfers', transferId), {
+                            ...transfer,
+                            likes: 0,
+                            dislikes: 0
+                        });
+                        console.log(`Transfer ${transfer.playerName} Firebase'e eklendi`);
+                    }
+                }
+
+                // Load final data from Firebase (with vote counts)
+                const finalSnapshot = await getDocs(collection(db, 'transfers'));
+                transfers = [];
+                finalSnapshot.forEach(doc => {
+                    transfers.push({ id: doc.id, ...doc.data() });
+                });
+
+                // Check user's votes from Firebase
+                const votesSnapshot = await getDocs(collection(db, 'votes'));
+                votesSnapshot.forEach(doc => {
+                    const voteData = doc.data();
+                    if (voteData.fingerprint === browserFingerprint) {
+                        userVotes[voteData.transferId] = voteData.voteType;
+                    }
+                });
+
+                document.getElementById('loading').style.display = 'none';
+                displayTransfers(transfers);
+
+            } catch (error) {
+                console.error('Hata:', error);
+                document.getElementById('loading').innerHTML = `<p style="color:#ef4444">HATA: ${error.message}</p>`;
+            }
+        }
+
+        function displayTransfers(transfersToShow) {
             const transferList = document.getElementById('transferList');
-            const loading = document.getElementById('loading');
-            const searchInput = document.getElementById('searchInput');
-            const statusFilter = document.getElementById('statusFilter');
-            const sortLikesBtn = document.getElementById('sortLikes');
+            transferList.innerHTML = '';
+            
+            if (transfersToShow.length === 0) {
+                transferList.innerHTML = '<div class="transfer-card"><p>Transfer bulunamadı.</p></div>';
+                return;
+            }
 
-            let transfers = [];
-            let userVotes = JSON.parse(localStorage.getItem('transferVotes')) || {};
-
-            fetch('data/transfers.json')
-                .then(response => {
-                    if (!response.ok) throw new Error('transfers.json bulunamadı');
-                    return response.json();
-                })
-                .then(data => {
-                    transfers = data;
-                    loading.style.display = 'none';
-                    displayTransfers(transfers);
-                })
-                .catch(error => {
-                    console.error('Hata:', error);
-                    loading.innerHTML = `<p style="color:#ef4444">HATA: ${error.message}</p>`;
-                });
-
-            function displayTransfers(transfersToShow) {
-                transferList.innerHTML = '';
+            transfersToShow.forEach(transfer => {
+                const hasVoted = userVotes[transfer.id] !== undefined;
+                const userVote = userVotes[transfer.id];
                 
-                if (transfersToShow.length === 0) {
-                    transferList.innerHTML = '<div class="transfer-card"><p>Transfer bulunamadı.</p></div>';
-                    return;
-                }
+                const sourcesHTML = transfer.verifiedSources && transfer.verifiedSources.length > 0 
+                    ? transfer.verifiedSources.map(source => `
+                        <a href="${source.url}" target="_blank" class="source">
+                            <i class="fas fa-${source.type === 'twitter' ? 'x-twitter' : 'newspaper'}"></i>
+                            <span class="source-name">${source.name}</span>
+                        </a>
+                    `).join('')
+                    : '<p style="font-size:0.8rem;color:#606060">Kaynak yok</p>';
 
-                transfersToShow.forEach(transfer => {
-                    const hasVoted = userVotes[transfer.id] !== undefined;
-                    const userVote = userVotes[transfer.id];
+                const card = document.createElement('div');
+                card.className = 'transfer-card';
+                card.innerHTML = `
+                    <div class="transfer-header">
+                        <h2>${transfer.playerName}</h2>
+                        <span class="status ${transfer.status}">${transfer.status}</span>
+                    </div>
                     
-                    const sourcesHTML = transfer.verifiedSources && transfer.verifiedSources.length > 0 
-                        ? transfer.verifiedSources.map(source => `
-                            <a href="${source.url}" target="_blank" class="source">
-                                <i class="fas fa-${source.type === 'twitter' ? 'x-twitter' : 'newspaper'}"></i>
-                                <span class="source-name">${source.name}</span>
-                            </a>
-                        `).join('')
-                        : '<p style="font-size:0.8rem;color:#606060">Kaynak yok</p>';
+                    <div class="player-meta">
+                        <span>${transfer.age} yaş</span>
+                        <span>${transfer.position}</span>
+                        <span>${transfer.nationality}</span>
+                    </div>
+                    
+                    <div class="transfer-teams">
+                        <div class="team from">
+                            <div class="team-logo-placeholder">${transfer.fromTeam.charAt(0)}</div>
+                            <span>${transfer.fromTeam}</span>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="team to">
+                            <div class="team-logo-placeholder">${transfer.toTeam.charAt(0)}</div>
+                            <span>${transfer.toTeam}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="transfer-details">
+                        <div class="detail">
+                            <span class="label">Bonservis</span>
+                            <span class="value">${transfer.transferFee || 'Açıklanmadı'}</span>
+                        </div>
+                        <div class="detail">
+                            <span class="label">Sözleşme</span>
+                            <span class="value">${transfer.contractYears || '?'} yıl</span>
+                        </div>
+                        <div class="detail">
+                            <span class="label">Yıllık Maaş</span>
+                            <span class="value">${transfer.annualSalary || 'Açıklanmadı'}</span>
+                        </div>
+                        <div class="detail">
+                            <span class="label">Transfer Tarihi</span>
+                            <span class="value">${formatDate(transfer.transferDate)}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="sources">
+                        <h4><i class="fas fa-link"></i> Kaynaklar</h4>
+                        <div class="source-links">
+                            ${sourcesHTML}
+                        </div>
+                    </div>
+                    
+                    <div class="voting">
+                        <button class="vote-btn like" data-id="${transfer.id}" ${hasVoted ? 'disabled' : ''}>
+                            👍 OK <span class="count">${transfer.likes || 0}</span>
+                            ${userVote === 'like' ? '<i class="fas fa-check"></i>' : ''}
+                        </button>
+                        <button class="vote-btn dislike" data-id="${transfer.id}" ${hasVoted ? 'disabled' : ''}>
+                            👎 NOT OK <span class="count">${transfer.dislikes || 0}</span>
+                            ${userVote === 'dislike' ? '<i class="fas fa-check"></i>' : ''}
+                        </button>
+                    </div>
+                    
+                    <div class="vote-message" id="message-${transfer.id}"></div>
+                `;
+                
+                transferList.appendChild(card);
+            });
 
-                    const card = document.createElement('div');
-                    card.className = 'transfer-card';
-                    card.innerHTML = `
-                        <div class="transfer-header">
-                            <h2>${transfer.playerName}</h2>
-                            <span class="status ${transfer.status}">${transfer.status}</span>
-                        </div>
-                        
-                        <div class="player-meta">
-                            <span>${transfer.age} yaş</span>
-                            <span>${transfer.position}</span>
-                            <span>${transfer.nationality}</span>
-                        </div>
-                        
-                        <div class="transfer-teams">
-                            <div class="team from">
-                                <div class="team-logo-placeholder">${transfer.fromTeam.charAt(0)}</div>
-                                <span>${transfer.fromTeam}</span>
-                            </div>
-                            <div class="arrow">→</div>
-                            <div class="team to">
-                                <div class="team-logo-placeholder">${transfer.toTeam.charAt(0)}</div>
-                                <span>${transfer.toTeam}</span>
-                            </div>
-                        </div>
-                        
-                        <div class="transfer-details">
-                            <div class="detail">
-                                <span class="label">Bonservis</span>
-                                <span class="value">${transfer.transferFee || 'Açıklanmadı'}</span>
-                            </div>
-                            <div class="detail">
-                                <span class="label">Sözleşme</span>
-                                <span class="value">${transfer.contractYears || '?'} yıl</span>
-                            </div>
-                            <div class="detail">
-                                <span class="label">Yıllık Maaş</span>
-                                <span class="value">${transfer.annualSalary || 'Açıklanmadı'}</span>
-                            </div>
-                            <div class="detail">
-                                <span class="label">Transfer Tarihi</span>
-                                <span class="value">${formatDate(transfer.transferDate)}</span>
-                            </div>
-                        </div>
-                        
-                        <div class="sources">
-                            <h4><i class="fas fa-link"></i> Kaynaklar</h4>
-                            <div class="source-links">
-                                ${sourcesHTML}
-                            </div>
-                        </div>
-                        
-                        <div class="voting">
-                            <button class="vote-btn like" data-id="${transfer.id}" ${hasVoted ? 'disabled' : ''}>
-                                👍 OK <span class="count">${transfer.likes || 0}</span>
-                                ${userVote === 'like' ? '<i class="fas fa-check"></i>' : ''}
-                            </button>
-                            <button class="vote-btn dislike" data-id="${transfer.id}" ${hasVoted ? 'disabled' : ''}>
-                                👎 NOT OK <span class="count">${transfer.dislikes || 0}</span>
-                                ${userVote === 'dislike' ? '<i class="fas fa-check"></i>' : ''}
-                            </button>
-                        </div>
-                        
-                        <div class="vote-message" id="message-${transfer.id}"></div>
-                    `;
-                    
-                    transferList.appendChild(card);
+            document.querySelectorAll('.vote-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const transferId = this.getAttribute('data-id');
+                    const voteType = this.classList.contains('like') ? 'like' : 'dislike';
+                    voteForTransfer(transferId, voteType);
+                });
+            });
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('tr-TR', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            });
+        }
+
+        async function voteForTransfer(transferId, voteType) {
+            if (userVotes[transferId] !== undefined) {
+                return;
+            }
+
+            try {
+                // Save vote to Firebase
+                const voteId = `${browserFingerprint}_${transferId}`;
+                await setDoc(doc(db, 'votes', voteId), {
+                    transferId: transferId,
+                    fingerprint: browserFingerprint,
+                    voteType: voteType,
+                    timestamp: new Date().toISOString()
                 });
 
-                document.querySelectorAll('.vote-btn').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const transferId = parseInt(this.getAttribute('data-id'));
-                        const voteType = this.classList.contains('like') ? 'like' : 'dislike';
-                        voteForTransfer(transferId, voteType);
+                // Update transfer vote count
+                const transferRef = doc(db, 'transfers', transferId);
+                if (voteType === 'like') {
+                    await updateDoc(transferRef, {
+                        likes: increment(1)
                     });
-                });
-            }
-
-            function formatDate(dateString) {
-                const date = new Date(dateString);
-                return date.toLocaleDateString('tr-TR', {
-                    day: '2-digit',
-                    month: 'long',
-                    year: 'numeric'
-                });
-            }
-
-            function voteForTransfer(transferId, voteType) {
-                if (userVotes[transferId] !== undefined) {
-                    return;
+                } else {
+                    await updateDoc(transferRef, {
+                        dislikes: increment(1)
+                    });
                 }
 
+                // Update local state
                 userVotes[transferId] = voteType;
                 localStorage.setItem('transferVotes', JSON.stringify(userVotes));
                 
-                const transfer = transfers.find(t => t.id === transferId);
+                const transfer = transfers.find(t => t.id == transferId);
                 if (voteType === 'like') {
                     transfer.likes = (transfer.likes || 0) + 1;
                 } else {
@@ -644,38 +755,49 @@
                 setTimeout(() => {
                     messageDiv.textContent = '';
                 }, 3000);
-            }
 
-            searchInput.addEventListener('input', filterTransfers);
-            statusFilter.addEventListener('change', filterTransfers);
+            } catch (error) {
+                console.error('Oy verme hatası:', error);
+                alert('Oy kaydedilemedi. Lütfen tekrar deneyin.');
+            }
+        }
+
+        const searchInput = document.getElementById('searchInput');
+        const statusFilter = document.getElementById('statusFilter');
+        const sortLikesBtn = document.getElementById('sortLikes');
+
+        searchInput.addEventListener('input', filterTransfers);
+        statusFilter.addEventListener('change', filterTransfers);
+        
+        function filterTransfers() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const statusTerm = statusFilter.value;
             
-            function filterTransfers() {
-                const searchTerm = searchInput.value.toLowerCase();
-                const statusTerm = statusFilter.value;
+            const filtered = transfers.filter(transfer => {
+                const matchesSearch = 
+                    transfer.playerName.toLowerCase().includes(searchTerm) ||
+                    transfer.fromTeam.toLowerCase().includes(searchTerm) ||
+                    transfer.toTeam.toLowerCase().includes(searchTerm);
                 
-                const filtered = transfers.filter(transfer => {
-                    const matchesSearch = 
-                        transfer.playerName.toLowerCase().includes(searchTerm) ||
-                        transfer.fromTeam.toLowerCase().includes(searchTerm) ||
-                        transfer.toTeam.toLowerCase().includes(searchTerm);
-                    
-                    const matchesStatus = !statusTerm || transfer.status === statusTerm;
-                    
-                    return matchesSearch && matchesStatus;
-                });
+                const matchesStatus = !statusTerm || transfer.status === statusTerm;
                 
-                displayTransfers(filtered);
-            }
-
-            sortLikesBtn.addEventListener('click', () => {
-                const sorted = [...transfers].sort((a, b) => {
-                    const likesA = a.likes || 0;
-                    const likesB = b.likes || 0;
-                    return likesB - likesA;
-                });
-                displayTransfers(sorted);
+                return matchesSearch && matchesStatus;
             });
+            
+            displayTransfers(filtered);
+        }
+
+        sortLikesBtn.addEventListener('click', () => {
+            const sorted = [...transfers].sort((a, b) => {
+                const likesA = a.likes || 0;
+                const likesB = b.likes || 0;
+                return likesB - likesA;
+            });
+            displayTransfers(sorted);
         });
+
+        // Initialize
+        loadTransfers();
     </script>
 </body>
 </html>
