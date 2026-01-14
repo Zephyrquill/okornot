@@ -10,7 +10,7 @@
     "transferFee": "- €",
     "contractYears": "-",
     "annualSalary": "- €",
-    "transferDate": "2026-01-14",
+    "transferDate": "2026-01-13",
     "status": "dedikodu",
     "verifiedSources": [
       {
@@ -49,6 +49,32 @@
     ],
     "likes": 0,
     "dislikes": 0
+  },
+    {
+    "id": 3,
+    "playerName": "Mert Günok",
+    "age": 36,
+    "position": "Kaleci",
+    "nationality": "Türkiye",
+    "fromTeam": "Beşiktaş  ",
+    "toTeam": "Fenerbahçe",
+    "transferFee": "- €",
+    "contractYears": "2.5",
+    "annualSalary": "- £",
+    "transferDate": "2026-01-05",
+    "status": "Resmi",
+    "verifiedSources": [
+      {
+        "name": "Fenerbahçe",
+        "url": "https://www.fenerbahce.org/haberler/futbol/2026/1/ailemize-hos-geldin-mert-gunok",
+        "type": "Haber"
+      }
+    ],
+    "likes": 0,
+    "dislikes": 0
   }
-]
 
+
+
+
+]
