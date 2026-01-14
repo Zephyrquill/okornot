@@ -37,7 +37,7 @@
     "toTeam": "Chelsea",
     "transferFee": "120M €",
     "contractYears": 5,
-    "weeklyWage": "300.000 £",
+    "annualSalary": "300.000 £",
     "transferDate": "2024-06-15",
     "status": "dedikodu",
     "verifiedSources": [
@@ -60,7 +60,7 @@
     "toTeam": "Real Madrid",
     "transferFee": "103M €",
     "contractYears": 6,
-    "weeklyWage": "200.000 €",
+    "annualSalary": "200.000 €",
     "transferDate": "2023-06-14",
     "status": "resmi",
     "verifiedSources": [
