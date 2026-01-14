@@ -1,31 +1,31 @@
 [
   {
     "id": 1,
-    "playerName": "Arda Güler",
-    "age": 19,
+    "playerName": "N'Golo Kanté",
+    "age": 34,
     "position": "Orta Saha",
     "nationality": "Türkiye",
-    "fromTeam": "Fenerbahçe",
-    "toTeam": "Real Madrid",
-    "transferFee": "20M €",
-    "contractYears": 6,
-    "weeklyWage": "150.000 €",
-    "transferDate": "2023-07-06",
-    "status": "resmi",
+    "fromTeam": "Al-Ittihad",
+    "toTeam": "Fenerbahçe",
+    "transferFee": "- €",
+    "contractYears": "-",
+    "annualSalary": "- €",
+    "transferDate": "2026-01-13",
+    "status": "dedikodu",
     "verifiedSources": [
       {
-        "name": "Real Madrid Resmi",
-        "url": "https://www.realmadrid.com/tr/haberler/2023/07/06/arda-guler-imzalandi",
-        "type": "resmi"
+        "name": "Fabrizio Romano",
+        "url": "https://x.com/FabrizioRomano/status/2011140708095365195",
+        "type": "twitter"
       },
       {
-        "name": "Fabrizio Romano",
-        "url": "https://twitter.com/FabrizioRomano/status/167650123456789",
+        "name": "Yağız Sabuncuoğlu",
+        "url": "https://x.com/yagosabuncuoglu/status/2011140647357726880",
         "type": "twitter"
       }
     ],
-    "likes": 2145,
-    "dislikes": 128
+    "likes": 0,
+    "dislikes": 0
   },
   {
     "id": 2,
@@ -73,5 +73,4 @@
     "likes": 3150,
     "dislikes": 95
   }
-
 ]
