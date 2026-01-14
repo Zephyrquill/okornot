@@ -95,7 +95,31 @@
     ],
     "likes": 0,
     "dislikes": 0
+  },
+      {
+    "id": 4,
+    "playerName": " Sebastian Szymanski",
+    "age": 26,
+    "position": "Orta Saha",
+    "nationality": "Polonya",
+    "fromTeam": "Fenerbahçe",
+    "toTeam": " Stade Rennes",
+    "transferFee": "- €",
+    "contractYears": "-",
+    "annualSalary": "- €",
+    "transferDate": "2026-01-14",
+    "status": "dedikodu",
+    "verifiedSources": [
+      {
+        "name": " Yağız Sabuncuoğlu",
+        "url": "https://x.com/yagosabuncuoglu/status/2010368055654674687",
+        "type": "twitter"
+      }
+    ],
+    "likes": 0,
+    "dislikes": 0
   }
+
 
 
 
