@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transfer Karnesi | OK or NOT</title>
     
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://zephyrquill.github.io/okornot/">
     <meta property="og:title" content="Transfer Karnesi | OK or NOT">
@@ -15,7 +14,6 @@
     <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="Transfer OK or NOT">
 
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://zephyrquill.github.io/okornot/">
     <meta name="twitter:title" content="Transfer Karnesi | OK or NOT">
@@ -496,14 +494,12 @@
         </footer>
     </div>
 
-    <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc, increment } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-        // Firebase configuration
         const firebaseConfig = {
-            apiKey: atob("QUl6YVN5QzBBRUVBQi1vSFMxUk1yc1o3c200SUVnOElyaUFQVDMw"),
+            apiKey: "AIzaSyC0AEEAB-oHS1RMrsZ7sm4IEg8IriAPT30",
             authDomain: "transfer-ok-or-not.firebaseapp.com",
             projectId: "transfer-ok-or-not",
             storageBucket: "transfer-ok-or-not.firebasestorage.app",
@@ -512,35 +508,81 @@
             measurementId: "G-WZBFXTRRWQ"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Global variables
         let transfers = [];
         let userVotes = JSON.parse(localStorage.getItem('transferVotes')) || {};
 
-        // Generate browser fingerprint
-        function getBrowserFingerprint() {
-            const fingerprint = localStorage.getItem('browserFingerprint');
-            if (fingerprint) return fingerprint;
+        function setCookie(name, value, days) {
+            const expires = new Date(Date.now() + days * 864e5).toUTCString();
+            document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Strict`;
+        }
+
+        function getCookie(name) {
+            return document.cookie.split('; ').reduce((r, v) => {
+                const parts = v.split('=');
+                return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+            }, '');
+        }
+
+        function hashString(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return Math.abs(hash).toString(36);
+        }
+
+        function generateFingerprint() {
+            const components = [
+                navigator.userAgent,
+                navigator.language,
+                screen.colorDepth,
+                screen.width + 'x' + screen.height,
+                new Date().getTimezoneOffset(),
+                navigator.hardwareConcurrency || 'unknown',
+                navigator.platform,
+                navigator.vendor || 'unknown'
+            ];
             
-            const newFingerprint = `fp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-            localStorage.setItem('browserFingerprint', newFingerprint);
-            return newFingerprint;
+            const fingerprintString = components.join('|||');
+            const hash = hashString(fingerprintString);
+            return `fp_${hash}_${Date.now()}`;
+        }
+
+        function getBrowserFingerprint() {
+            let fingerprint = getCookie('browserFingerprint');
+            
+            if (fingerprint) {
+                localStorage.setItem('browserFingerprint', fingerprint);
+                return fingerprint;
+            }
+            
+            fingerprint = localStorage.getItem('browserFingerprint');
+            
+            if (fingerprint) {
+                setCookie('browserFingerprint', fingerprint, 365);
+                return fingerprint;
+            }
+            
+            fingerprint = generateFingerprint();
+            setCookie('browserFingerprint', fingerprint, 365);
+            localStorage.setItem('browserFingerprint', fingerprint);
+            
+            return fingerprint;
         }
 
         const browserFingerprint = getBrowserFingerprint();
 
-        // Load transfers from JSON and sync with Firebase
         async function loadTransfers() {
             try {
-                // Load from JSON
                 const response = await fetch('data/transfers.json');
                 if (!response.ok) throw new Error('transfers.json bulunamadı');
                 const jsonTransfers = await response.json();
 
-                // Get existing transfers from Firebase
                 const transfersSnapshot = await getDocs(collection(db, 'transfers'));
                 const existingIds = new Set();
                 const firestoreTransfers = [];
@@ -550,12 +592,10 @@
                     firestoreTransfers.push({ id: doc.id, ...doc.data() });
                 });
 
-                // Sync JSON transfers to Firebase
                 for (const transfer of jsonTransfers) {
                     const transferId = transfer.id.toString();
                     
                     if (!existingIds.has(transferId)) {
-                        // Add new transfer to Firebase
                         await setDoc(doc(db, 'transfers', transferId), {
                             ...transfer,
                             likes: 0,
@@ -565,14 +605,12 @@
                     }
                 }
 
-                // Load final data from Firebase (with vote counts)
                 const finalSnapshot = await getDocs(collection(db, 'transfers'));
                 transfers = [];
                 finalSnapshot.forEach(doc => {
                     transfers.push({ id: doc.id, ...doc.data() });
                 });
 
-                // Check user's votes from Firebase
                 const votesSnapshot = await getDocs(collection(db, 'votes'));
                 votesSnapshot.forEach(doc => {
                     const voteData = doc.data();
@@ -705,7 +743,6 @@
             }
 
             try {
-                // Save vote to Firebase
                 const voteId = `${browserFingerprint}_${transferId}`;
                 await setDoc(doc(db, 'votes', voteId), {
                     transferId: transferId,
@@ -714,7 +751,6 @@
                     timestamp: new Date().toISOString()
                 });
 
-                // Update transfer vote count
                 const transferRef = doc(db, 'transfers', transferId);
                 if (voteType === 'like') {
                     await updateDoc(transferRef, {
@@ -726,7 +762,6 @@
                     });
                 }
 
-                // Update local state
                 userVotes[transferId] = voteType;
                 localStorage.setItem('transferVotes', JSON.stringify(userVotes));
                 
@@ -796,7 +831,6 @@
             displayTransfers(sorted);
         });
 
-        // Initialize
         loadTransfers();
     </script>
 </body>
