@@ -1,0 +1,76 @@
+[
+  {
+    "id": 1,
+    "playerName": "Arda Güler",
+    "age": 19,
+    "position": "Orta Saha",
+    "nationality": "Türkiye",
+    "fromTeam": "Fenerbahçe",
+    "toTeam": "Real Madrid",
+    "transferFee": "20M €",
+    "contractYears": 6,
+    "weeklyWage": "150.000 €",
+    "transferDate": "2023-07-06",
+    "status": "resmi",
+    "verifiedSources": [
+      {
+        "name": "Real Madrid Resmi",
+        "url": "https://www.realmadrid.com/tr/haberler/2023/07/06/arda-guler-imzalandi",
+        "type": "resmi"
+      },
+      {
+        "name": "Fabrizio Romano",
+        "url": "https://twitter.com/FabrizioRomano/status/167650123456789",
+        "type": "twitter"
+      }
+    ],
+    "likes": 2145,
+    "dislikes": 128
+  },
+  {
+    "id": 2,
+    "playerName": "Victor Osimhen",
+    "age": 25,
+    "position": "Forvet",
+    "nationality": "Nijerya",
+    "fromTeam": "Napoli",
+    "toTeam": "Chelsea",
+    "transferFee": "120M €",
+    "contractYears": 5,
+    "weeklyWage": "300.000 £",
+    "transferDate": "2024-06-15",
+    "status": "dedikodu",
+    "verifiedSources": [
+      {
+        "name": "Sky Sports",
+        "url": "https://www.skysports.com/football/news/11668/12345678/osimhen-chelsea-transfer",
+        "type": "news"
+      }
+    ],
+    "likes": 892,
+    "dislikes": 415
+  },
+  {
+    "id": 3,
+    "playerName": "Jude Bellingham",
+    "age": 20,
+    "position": "Orta Saha",
+    "nationality": "İngiltere",
+    "fromTeam": "Borussia Dortmund",
+    "toTeam": "Real Madrid",
+    "transferFee": "103M €",
+    "contractYears": 6,
+    "weeklyWage": "200.000 €",
+    "transferDate": "2023-06-14",
+    "status": "resmi",
+    "verifiedSources": [
+      {
+        "name": "Real Madrid Resmi",
+        "url": "https://www.realmadrid.com/tr/haberler/2023/06/14/jude-bellingham-imzalandi",
+        "type": "resmi"
+      }
+    ],
+    "likes": 3150,
+    "dislikes": 95
+  }
+]
