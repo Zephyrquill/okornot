@@ -438,6 +438,92 @@
             color: #606060;
         }
 
+        .cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 15, 15, 0.98);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding: 20px;
+            z-index: 1000;
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+        }
+
+        .cookie-banner.show {
+            transform: translateY(0);
+        }
+
+        .cookie-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .cookie-text {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .cookie-text h3 {
+            font-size: 1rem;
+            color: #ffffff;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cookie-text p {
+            font-size: 0.9rem;
+            color: #a0a0a0;
+            line-height: 1.6;
+        }
+
+        .cookie-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .cookie-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .cookie-btn.accept {
+            background: #4ade80;
+            color: #0f0f0f;
+        }
+
+        .cookie-btn.accept:hover {
+            background: #22c55e;
+            transform: translateY(-2px);
+        }
+
+        .cookie-btn.reject {
+            background: rgba(255,255,255,0.05);
+            color: #a0a0a0;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .cookie-btn.reject:hover {
+            background: rgba(255,255,255,0.08);
+            color: #e8e8e8;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 30px 16px;
@@ -458,10 +544,44 @@
             .transfer-details {
                 grid-template-columns: 1fr;
             }
+
+            .cookie-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .cookie-buttons {
+                justify-content: stretch;
+            }
+
+            .cookie-btn {
+                flex: 1;
+            }
         }
     </style>
 </head>
 <body>
+    <div id="cookieBanner" class="cookie-banner">
+        <div class="cookie-content">
+            <div class="cookie-text">
+                <h3><i class="fas fa-cookie-bite"></i> Çerez Kullanımı</h3>
+                <p>
+                    Bu site, oy tercihlerinizi hatırlamak için çerezler kullanır. 
+                    Hiçbir kişisel veri toplanmaz veya üçüncü taraflarla paylaşılmaz. 
+                    Siteyi kullanarak çerez politikamızı kabul etmiş olursunuz.
+                </p>
+            </div>
+            <div class="cookie-buttons">
+                <button class="cookie-btn accept" onclick="acceptCookies()">
+                    <i class="fas fa-check"></i> Kabul Et
+                </button>
+                <button class="cookie-btn reject" onclick="rejectCookies()">
+                    <i class="fas fa-times"></i> Reddet
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <header>
             <h1 class="site-title">TRANSFER<br>OK or NOT</h1>
@@ -496,7 +616,7 @@
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc, increment } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getFirestore, collection, doc, getDocs, setDoc, updateDoc, increment } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyC0AEEAB-oHS1RMrsZ7sm4IEg8IriAPT30",
@@ -513,13 +633,34 @@
 
         let transfers = [];
         let userVotes = JSON.parse(localStorage.getItem('transferVotes')) || {};
+        let cookiesAccepted = localStorage.getItem('cookiesAccepted');
+
+        window.acceptCookies = function() {
+            localStorage.setItem('cookiesAccepted', 'true');
+            document.getElementById('cookieBanner').classList.remove('show');
+        };
+
+        window.rejectCookies = function() {
+            localStorage.setItem('cookiesAccepted', 'false');
+            document.getElementById('cookieBanner').classList.remove('show');
+        };
+
+        function showCookieBanner() {
+            if (!cookiesAccepted) {
+                setTimeout(() => {
+                    document.getElementById('cookieBanner').classList.add('show');
+                }, 1000);
+            }
+        }
 
         function setCookie(name, value, days) {
+            if (localStorage.getItem('cookiesAccepted') !== 'true') return;
             const expires = new Date(Date.now() + days * 864e5).toUTCString();
             document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Strict`;
         }
 
         function getCookie(name) {
+            if (localStorage.getItem('cookiesAccepted') !== 'true') return '';
             return document.cookie.split('; ').reduce((r, v) => {
                 const parts = v.split('=');
                 return parts[0] === name ? decodeURIComponent(parts[1]) : r;
@@ -585,11 +726,9 @@
 
                 const transfersSnapshot = await getDocs(collection(db, 'transfers'));
                 const existingIds = new Set();
-                const firestoreTransfers = [];
 
                 transfersSnapshot.forEach(doc => {
                     existingIds.add(doc.id);
-                    firestoreTransfers.push({ id: doc.id, ...doc.data() });
                 });
 
                 for (const transfer of jsonTransfers) {
@@ -601,7 +740,6 @@
                             likes: 0,
                             dislikes: 0
                         });
-                        console.log(`Transfer ${transfer.playerName} Firebase'e eklendi`);
                     }
                 }
 
@@ -742,6 +880,11 @@
                 return;
             }
 
+            if (localStorage.getItem('cookiesAccepted') !== 'true') {
+                alert('Oy vermek için çerezleri kabul etmelisiniz.');
+                return;
+            }
+
             try {
                 const voteId = `${browserFingerprint}_${transferId}`;
                 await setDoc(doc(db, 'votes', voteId), {
@@ -832,6 +975,7 @@
         });
 
         loadTransfers();
+        showCookieBanner();
     </script>
 </body>
 </html>
