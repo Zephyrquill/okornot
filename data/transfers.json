@@ -28,22 +28,22 @@
     "dislikes": 0
   },
   {
-    "id": 2,
-    "playerName": "Can Armando Güner",
-    "age": 18,
-    "position": "Forvet",
-    "nationality": "Türkiye",
-    "fromTeam": "Borussia Mönchengladbach U19",
+    "id": 11,
+    "playerName": "Youssouf Fofana",
+    "age": 27,
+    "position": "Defans",
+    "nationality": "Fransa",
+    "fromTeam": "Milan",
     "toTeam": "Galatasaray",
     "transferFee": "- €",
     "contractYears": "-",
     "annualSalary": "- £",
-    "transferDate": "2026-01-15",
+    "transferDate": "2026-01-16",
     "status": "dedikodu",
     "verifiedSources": [
       {
-        "name": "Burhan Can Terzi ",
-        "url": "https://x.com/burhancanterzii/status/2011560147366396001",
+        "name": "Yağız Sabuncuoğlu",
+        "url": "https://x.com/yagosabuncuoglu/status/2011874702319648990",
         "type": "twitter"
       }
     ],
@@ -173,6 +173,5 @@
   }
 
 ]
-
 
 
