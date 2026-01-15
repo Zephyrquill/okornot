@@ -731,6 +731,8 @@
                     existingTransfers.set(doc.id, doc.data());
                 });
 
+                const jsonTransferIds = new Set(jsonTransfers.map(t => t.id.toString()));
+
                 for (const transfer of jsonTransfers) {
                     const transferId = transfer.id.toString();
                     const existingTransfer = existingTransfers.get(transferId);
@@ -753,7 +755,10 @@
                 const finalSnapshot = await getDocs(collection(db, 'transfers'));
                 transfers = [];
                 finalSnapshot.forEach(doc => {
-                    transfers.push({ id: doc.id, ...doc.data() });
+                    const transferData = { id: doc.id, ...doc.data() };
+                    if (jsonTransferIds.has(doc.id)) {
+                        transfers.push(transferData);
+                    }
                 });
 
                 const votesSnapshot = await getDocs(collection(db, 'votes'));
