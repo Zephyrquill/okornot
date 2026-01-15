@@ -37,7 +37,7 @@
     "toTeam": "Galatasaray",
     "transferFee": "- €",
     "contractYears": "-",
-    "annualSalary": "- £",
+    "annualSalary": "- €",
     "transferDate": "2026-01-16",
     "status": "dedikodu",
     "verifiedSources": [
@@ -126,7 +126,7 @@
   },
   {
     "id": 9,
-    "playerName": "Hakan Çalhanoğlu ",
+    "playerName": "Hakan Çalhanoğlu",
     "age": 31,
     "position": "Orta Saha",
     "nationality": "Türkiye",
@@ -147,7 +147,6 @@
     "likes": 0,
     "dislikes": 0
   },
-
   {
     "id": 7,
     "playerName": "Omar Marmoush",
@@ -171,7 +170,6 @@
     "likes": 0,
     "dislikes": 0
   },
-
   {
     "id": 99,
     "playerName": "Aleksandar Mitrović",
@@ -196,6 +194,3 @@
     "dislikes": 0
   }
 ]
-
-
-
