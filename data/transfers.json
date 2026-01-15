@@ -170,8 +170,31 @@
     ],
     "likes": 0,
     "dislikes": 0
-  }
+  },
 
+    {
+    "id": 99,
+    "playerName": "Aleksandar Mitrović",
+    "age": 31,
+    "position": "Forvet",
+    "nationality": "Sırbistan",
+    "fromTeam": "Al-Rayyan",
+    "toTeam": "Fenerbahçe",
+    "transferFee": "- €",
+    "contractYears": "-",
+    "annualSalary": "- €",
+    "transferDate": "2026-01-16",
+    "status": "dedikodu",
+    "verifiedSources": [
+      {
+        "name": "Tâlha Arslan",
+        "url": "https://x.com/TalhaArslan_TV/status/2011916500861390956",
+        "type": "twitter"
+      }
+    ],
+    "likes": 0,
+    "dislikes": 0
+  }
 ]
 
 
