@@ -3,7 +3,7 @@
     "id": 1,
     "playerName": "N'Golo Kanté",
     "age": 34,
-    "position": "Orta Saha",
+    "position": "Defansif Orta Saha",
     "nationality": "Fransa",
     "fromTeam": "Al-Ittihad",
     "toTeam": "Fenerbahçe",
@@ -148,6 +148,7 @@
     "dislikes": 0
   }
 ]
+
 
 
 
