@@ -725,21 +725,28 @@
                 const jsonTransfers = await response.json();
 
                 const transfersSnapshot = await getDocs(collection(db, 'transfers'));
-                const existingIds = new Set();
+                const existingTransfers = new Map();
 
                 transfersSnapshot.forEach(doc => {
-                    existingIds.add(doc.id);
+                    existingTransfers.set(doc.id, doc.data());
                 });
 
                 for (const transfer of jsonTransfers) {
                     const transferId = transfer.id.toString();
+                    const existingTransfer = existingTransfers.get(transferId);
                     
-                    if (!existingIds.has(transferId)) {
+                    if (!existingTransfer) {
                         await setDoc(doc(db, 'transfers', transferId), {
                             ...transfer,
                             likes: 0,
                             dislikes: 0
                         });
+                    } else {
+                        await setDoc(doc(db, 'transfers', transferId), {
+                            ...transfer,
+                            likes: existingTransfer.likes || 0,
+                            dislikes: existingTransfer.dislikes || 0
+                        }, { merge: true });
                     }
                 }
 
