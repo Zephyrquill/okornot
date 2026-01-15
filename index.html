@@ -616,7 +616,7 @@
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, doc, getDocs, setDoc, updateDoc, increment } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getFirestore, collection, doc, getDocs, setDoc, updateDoc, increment, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyC0AEEAB-oHS1RMrsZ7sm4IEg8IriAPT30",
@@ -724,41 +724,41 @@
                 if (!response.ok) throw new Error('transfers.json bulunamadı');
                 const jsonTransfers = await response.json();
 
+                const jsonIds = new Set(jsonTransfers.map(t => t.id.toString()));
+
                 const transfersSnapshot = await getDocs(collection(db, 'transfers'));
-                const existingTransfers = new Map();
-
-                transfersSnapshot.forEach(doc => {
-                    existingTransfers.set(doc.id, doc.data());
-                });
-
-                const jsonTransferIds = new Set(jsonTransfers.map(t => t.id.toString()));
+                
+                for (const docSnapshot of transfersSnapshot.docs) {
+                    if (!jsonIds.has(docSnapshot.id)) {
+                        await deleteDoc(doc(db, 'transfers', docSnapshot.id));
+                        console.log(`Transfer silindi: ${docSnapshot.id}`);
+                    }
+                }
 
                 for (const transfer of jsonTransfers) {
                     const transferId = transfer.id.toString();
-                    const existingTransfer = existingTransfers.get(transferId);
+                    const transferRef = doc(db, 'transfers', transferId);
+                    const existingDoc = transfersSnapshot.docs.find(d => d.id === transferId);
                     
-                    if (!existingTransfer) {
-                        await setDoc(doc(db, 'transfers', transferId), {
+                    if (existingDoc) {
+                        await setDoc(transferRef, {
+                            ...transfer,
+                            likes: existingDoc.data().likes || 0,
+                            dislikes: existingDoc.data().dislikes || 0
+                        });
+                    } else {
+                        await setDoc(transferRef, {
                             ...transfer,
                             likes: 0,
                             dislikes: 0
                         });
-                    } else {
-                        await setDoc(doc(db, 'transfers', transferId), {
-                            ...transfer,
-                            likes: existingTransfer.likes || 0,
-                            dislikes: existingTransfer.dislikes || 0
-                        }, { merge: true });
                     }
                 }
 
                 const finalSnapshot = await getDocs(collection(db, 'transfers'));
                 transfers = [];
                 finalSnapshot.forEach(doc => {
-                    const transferData = { id: doc.id, ...doc.data() };
-                    if (jsonTransferIds.has(doc.id)) {
-                        transfers.push(transferData);
-                    }
+                    transfers.push({ id: doc.id, ...doc.data() });
                 });
 
                 const votesSnapshot = await getDocs(collection(db, 'votes'));
