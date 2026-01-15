@@ -125,6 +125,30 @@
     "dislikes": 0
   },
   {
+    "id": 9,
+    "playerName": "Hakan Çalhanoğlu ",
+    "age": 31,
+    "position": "Orta Saha",
+    "nationality": "Türkiye",
+    "fromTeam": "Inter",
+    "toTeam": "Galatasaray",
+    "transferFee": "20M €",
+    "contractYears": "-",
+    "annualSalary": "- €",
+    "transferDate": "2026-01-15",
+    "status": "dedikodu",
+    "verifiedSources": [
+      {
+        "name": "Sergen Dağ",
+        "url": "https://x.com/sergendag/status/2011506042526372230",
+        "type": "twitter"
+      }
+    ],
+    "likes": 0,
+    "dislikes": 0
+  },
+
+  {
     "id": 7,
     "playerName": "Omar Marmoush",
     "age": 26,
@@ -147,8 +171,8 @@
     "likes": 0,
     "dislikes": 0
   }
-]
 
+]
 
 
 
